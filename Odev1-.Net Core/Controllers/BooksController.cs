@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Odev1_.Net_Core.BookOperation.CreateBook;
+using Odev1_.Net_Core.BookOperation.DeleteBook;
 using Odev1_.Net_Core.BookOperation.GetBooks;
 using Odev1_.Net_Core.BookOperation.GetBooksById;
 using Odev1_.Net_Core.BookOperation.UpdateBook;
@@ -87,13 +88,17 @@ namespace Odev1_.Net_Core.Controllers
         [HttpDelete]
         public IActionResult DeleteBook(int id)
         {
-            var book = bookStoreDbContext.Books.FirstOrDefault(x => x.Id == id);
-            if(book == null)
+            try
             {
-                return BadRequest();
+                DeleteBookCommand command = new DeleteBookCommand(bookStoreDbContext);
+                command.BookId = id;
+                command.Handle();
             }
-            bookStoreDbContext.Books.Remove(book);
-            bookStoreDbContext.SaveChanges();
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
             return Ok();
         }
     }
