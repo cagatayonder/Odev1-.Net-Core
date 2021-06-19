@@ -12,6 +12,7 @@ using Odev1_.Net_Core.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Odev1_.Net_Core
@@ -30,6 +31,7 @@ namespace Odev1_.Net_Core
         {
 
             services.AddControllers();
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddDbContext<BookStoreDbContext>(opt => opt.UseInMemoryDatabase(databaseName: "BookStoreDB"));
             services.AddSwaggerGen(c =>
             {

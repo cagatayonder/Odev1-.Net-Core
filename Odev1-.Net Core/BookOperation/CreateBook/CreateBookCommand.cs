@@ -1,4 +1,6 @@
-﻿using Odev1_.Net_Core.Data;
+﻿using AutoMapper;
+using Odev1_.Net_Core.Data;
+using Odev1_.Net_Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +13,12 @@ namespace Odev1_.Net_Core.BookOperation.CreateBook
     {
         public CreateBookModel Model { get; set; }
         private readonly BookStoreDbContext dbContext;
+        private readonly IMapper mapper;
 
-        public CreateBookCommand(BookStoreDbContext dbContext)
+        public CreateBookCommand(BookStoreDbContext dbContext, IMapper mapper)
         {
             this.dbContext = dbContext;
+            this.mapper = mapper;
         }
         public void Handle()
         {
@@ -23,11 +27,7 @@ namespace Odev1_.Net_Core.BookOperation.CreateBook
             {
                 throw new InvalidOperationException("Kitap zaten mevcut");
             }
-            book = new Models.Book();
-            book.Title = Model.Title;
-            book.PublishDate = Model.PublishDate;
-            book.PageCount = Model.PageCount;
-            book.GenreId = Model.GenreId;
+            book = mapper.Map<Book>(Model);
             dbContext.Books.Add(book);
             dbContext.SaveChanges();
             

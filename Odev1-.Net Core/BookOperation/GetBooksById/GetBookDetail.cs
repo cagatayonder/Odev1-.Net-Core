@@ -1,4 +1,5 @@
-﻿using Odev1_.Net_Core.Common;
+﻿using AutoMapper;
+using Odev1_.Net_Core.Common;
 using Odev1_.Net_Core.Data;
 using System;
 using System.Collections.Generic;
@@ -10,11 +11,13 @@ namespace Odev1_.Net_Core.BookOperation.GetBooksById
     public class GetBookDetail
     {
         private readonly BookStoreDbContext dbContext;
+        private readonly IMapper mapper;
         public int BookId { get; set; }
 
-        public GetBookDetail(BookStoreDbContext dbContext)
+        public GetBookDetail(BookStoreDbContext dbContext,IMapper mapper)
         {
             this.dbContext = dbContext;
+            this.mapper = mapper;
         }
         public BookDetailViewModel Handle()
         {
@@ -23,11 +26,7 @@ namespace Odev1_.Net_Core.BookOperation.GetBooksById
             {
                 throw new InvalidOperationException("Kitap bulunamadı");
             }
-            BookDetailViewModel vm = new BookDetailViewModel();
-            vm.Title = book.Title;
-            vm.PublishDate = book.PublishDate.ToString("dd/MM/yyyy");
-            vm.PageCount = book.PageCount;
-            vm.Genre = ((GenreEnum)book.GenreId).ToString();
+            BookDetailViewModel vm = mapper.Map<BookDetailViewModel>(book);
             return vm;
         }
     }
