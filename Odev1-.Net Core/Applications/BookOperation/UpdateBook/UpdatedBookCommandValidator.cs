@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Odev1_.Net_Core.BookOperation.UpdateBook
 {
-    public class UpdatedBookCommandValidator : AbstractValidator<UpdateBookCommand>
+    public class UpdatedAuthorCommandValidator : AbstractValidator<UpdateBookCommand>
     {
-        public UpdatedBookCommandValidator()
+        public UpdatedAuthorCommandValidator()
         {
             RuleFor(command => command.Model.GenreId).GreaterThan(0);
             RuleFor(command => command.Model.Title).NotEmpty().MinimumLength(4);

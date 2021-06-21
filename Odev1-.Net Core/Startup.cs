@@ -9,6 +9,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Odev1_.Net_Core.Data;
+using Odev1_.Net_Core.Middlewares;
+using Odev1_.Net_Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +33,7 @@ namespace Odev1_.Net_Core
         {
 
             services.AddControllers();
+            services.AddSingleton<ILoggerService, ConsoleLogger>();
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddDbContext<BookStoreDbContext>(opt => opt.UseInMemoryDatabase(databaseName: "BookStoreDB"));
             services.AddSwaggerGen(c =>
@@ -54,6 +57,7 @@ namespace Odev1_.Net_Core
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseCustomExceptionMiddleware();
 
             app.UseEndpoints(endpoints =>
             {

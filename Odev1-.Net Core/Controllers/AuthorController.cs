@@ -1,53 +1,55 @@
 ﻿using AutoMapper;
 using FluentValidation;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Odev1_.Net_Core.Applications.AuthorOperations;
+using Odev1_.Net_Core.Applications.AuthorOperations.CreateAuthor;
+using Odev1_.Net_Core.Applications.AuthorOperations.DeleteAuthor;
+using Odev1_.Net_Core.Applications.AuthorOperations.GetAuthorDetail;
+using Odev1_.Net_Core.Applications.AuthorOperations.UpdateAuthor;
 using Odev1_.Net_Core.BookOperation.CreateBook;
 using Odev1_.Net_Core.BookOperation.DeleteBook;
 using Odev1_.Net_Core.BookOperation.GetBooks;
 using Odev1_.Net_Core.BookOperation.GetBooksById;
 using Odev1_.Net_Core.BookOperation.UpdateBook;
 using Odev1_.Net_Core.Data;
-using Odev1_.Net_Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static Odev1_.Net_Core.BookOperation.CreateBook.CreateBookCommand;
-using static Odev1_.Net_Core.BookOperation.UpdateBook.UpdateBookCommand;
+using static Odev1_.Net_Core.Applications.AuthorOperations.CreateAuthor.CreateAuthorCommand;
+using static Odev1_.Net_Core.Applications.AuthorOperations.UpdateAuthor.UpdateAuthorCommand;
 
 namespace Odev1_.Net_Core.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BooksController : ControllerBase
+    public class AuthorController : ControllerBase
     {
         private readonly BookStoreDbContext bookStoreDbContext;
         private readonly IMapper mapper;
 
-        public BooksController(BookStoreDbContext bookStoreDbContext , IMapper mapper)
+        public AuthorController(BookStoreDbContext bookStoreDbContext, IMapper mapper)
         {
             this.bookStoreDbContext = bookStoreDbContext;
             this.mapper = mapper;
         }
         [HttpGet]
-        public IActionResult GetBooks()
+        public IActionResult GetAuthors()
         {
-            GetBooksQuery query = new GetBooksQuery(bookStoreDbContext,mapper);
+            GetAuthorQuery query = new GetAuthorQuery(bookStoreDbContext, mapper);
             var result = query.Handle();
             return Ok(result);
         }
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            BookDetailViewModel result;
+            AuthorDetailViewModel result;
             try
             {
-                GetBookDetail detail = new GetBookDetail(bookStoreDbContext,mapper);
-                detail.BookId = id;
-                GetBookDetailValidator validator = new GetBookDetailValidator();
+                GetAuthorDetailQuery detail = new GetAuthorDetailQuery(bookStoreDbContext, mapper);
+                detail.AuthorId = id;
+                GetAuthorDetailQueryValidator validator = new GetAuthorDetailQueryValidator();
                 validator.ValidateAndThrow(detail);
                 result = detail.Handle();
             }
@@ -59,13 +61,13 @@ namespace Odev1_.Net_Core.Controllers
             return Ok(result);
         }
         [HttpPost]
-        public IActionResult AddBook([FromBody] CreateBookModel newBook)
+        public IActionResult AddAuthor([FromBody] CreateAuthorModel newAuthor)
         {
-            CreateBookCommand command = new CreateBookCommand(bookStoreDbContext,mapper);
+            CreateAuthorCommand command = new CreateAuthorCommand(bookStoreDbContext, mapper);
             try
             {
-                command.Model = newBook;
-                CreateBookCommandValidator validator = new CreateBookCommandValidator();
+                command.Model = newAuthor;
+                CreateAuthorCommandValidator validator = new CreateAuthorCommandValidator();
                 validator.ValidateAndThrow(command);
                 command.Handle();
             }
@@ -77,15 +79,15 @@ namespace Odev1_.Net_Core.Controllers
             return Ok();
         }
         [HttpPut("{id}")]
-        public IActionResult UpdateBook(int id,[FromBody] UpdateBookModel updatedBook)
+        public IActionResult UpdateAuthor(int id, [FromBody] UpdateAuthorModel updatedAuthor)
         {
 
             try
             {
-                UpdateBookCommand command = new UpdateBookCommand(bookStoreDbContext);
-                command.BookId = id;
-                command.Model = updatedBook;
-                UpdatedAuthorCommandValidator validator = new UpdatedAuthorCommandValidator();
+                UpdateAuthorCommand command = new UpdateAuthorCommand(bookStoreDbContext);
+                command.AuthorId = id;
+                command.Model = updatedAuthor;
+                UpdateAuthorCommandValidator validator = new UpdateAuthorCommandValidator();
                 validator.ValidateAndThrow(command);
                 command.Handle();
             }
@@ -95,16 +97,16 @@ namespace Odev1_.Net_Core.Controllers
                 return BadRequest(ex.Message);
             }
             return Ok();
-            
+
         }
         [HttpDelete]
-        public IActionResult DeleteBook(int id)
+        public IActionResult DeleteAuthor(int id)
         {
             try
             {
-                DeleteBookCommand command = new DeleteBookCommand(bookStoreDbContext);
-                command.BookId = id;
-                DeleteBookCommandValidator validator = new DeleteBookCommandValidator();
+                DeleteAuthorCommand command = new DeleteAuthorCommand(bookStoreDbContext);
+                command.AuthorId = id;
+                DeleteAuthorCommandValidator validator = new DeleteAuthorCommandValidator();
                 validator.ValidateAndThrow(command);
                 command.Handle();
             }
@@ -116,5 +118,6 @@ namespace Odev1_.Net_Core.Controllers
             return Ok();
         }
     }
-    
+
 }
+
